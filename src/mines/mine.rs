@@ -1,6 +1,6 @@
 use super::Positition;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Mine {
     column: usize,
     row: usize,
@@ -9,15 +9,7 @@ pub struct Mine {
 }
 
 impl Mine {
-    pub fn new() -> MineBuilder {
-        MineBuilder {
-            column: None,
-            row: None,
-            is_bomb: None
-        }
-    }
-
-    pub fn reveal(&mut self) {
+    pub fn _reveal(&mut self) {
         self.revealed = true;
     }
 
@@ -28,43 +20,29 @@ impl Mine {
     pub fn get_position(self) -> Positition {
         Positition::new().column(self.column).row(self.row).build()
     }
-}
 
-pub struct MineBuilder {
-    column: Option<usize>,
-    row: Option<usize>,
-    is_bomb: Option<bool>,
-}
-
-impl MineBuilder {
-
-    pub fn position(&mut self, pos: &Positition) -> &mut Self {
-        self.row = Some(pos.get_row());
-        self.column = Some(pos.get_column());
-        self
-    }
-
-    pub fn row(&mut self, row: usize) -> &mut Self {
-        self.row = Some(row);
-        self
-    }
-
-    pub fn column(&mut self, column: usize) -> &mut Self {
-        self.column = Some(column);
-        self
-    }
-
-    pub fn is_bomb(&mut self, is_bomb: bool) -> &mut Self {
-        self.is_bomb = Some(is_bomb);
-        self
-    }
-
-    pub fn build(&mut self) -> Mine {
-        Mine {
-            column: self.column.unwrap_or(0),
-            row: self.row.unwrap_or(0),
-            is_bomb: self.is_bomb.unwrap_or_default(),
-            revealed: false,
+    pub fn generate_mines(size: usize, amount_bombs: usize) -> Vec<Self>{
+        let mut mines: Vec<Mine> = Vec::new();
+        let mut bombs: Vec<Positition> = Vec::new();
+        for _ in 0..amount_bombs{
+            bombs.push(Positition::get_random(size));
         }
+
+
+        for row in 0..size{
+            for column in 0..size{
+                let pos = Positition::new().row(row).column(column).build();
+                let is_bomb = bombs.iter().any(|bomb_pos|bomb_pos.equals(&pos));
+                let mine = Mine { 
+                    column, 
+                    row, 
+                    is_bomb, 
+                    revealed: false 
+                };
+                mines.push(mine);
+            }
+        }
+        mines
+
     }
 }
