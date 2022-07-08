@@ -1,3 +1,4 @@
+#![allow(unused)]
 mod mines;
 
 #[cfg(test)]
