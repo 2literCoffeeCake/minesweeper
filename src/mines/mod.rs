@@ -1,6 +1,6 @@
 mod positition;
 mod mine;
-mod minesfield;
+mod minefield;
 
 use positition::Positition;
 use mine::Mine;

@@ -1,11 +1,17 @@
-#![allow(unused)]
-mod mines;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
-    }
+
+mod mines;
+mod ui;
+
+use ui::App;
+
+
+extern crate wasm_bindgen;
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen(start)]
+pub fn main() -> Result<(), JsValue> {
+    yew::start_app::<App>();
+    Ok(())
 }
+

@@ -1,5 +1,6 @@
 use rand::Rng;
 
+#[derive(Clone, Copy)]
 pub struct Positition {
     row: usize,
     column: usize,
@@ -23,9 +24,13 @@ impl Positition {
 
     pub fn get_random(max_value: usize) -> Self {
         Self {
-            row: rand::thread_rng().gen_range(0..max_value),
-            column: rand::thread_rng().gen_range(0..max_value),
+            row: rand::thread_rng().gen_range(0..=max_value),
+            column: rand::thread_rng().gen_range(0..=max_value),
         }
+    }
+
+    pub fn equals(&self, pos: &Positition) -> bool{
+        self.column == pos.column && self.row == pos.row
     }
 }
 
@@ -41,7 +46,7 @@ impl PositionBuilder {
     }
 
     pub fn column(&mut self, column: usize) -> &mut Self {
-        self.row = Some(column);
+        self.column = Some(column);
         self
     }
 

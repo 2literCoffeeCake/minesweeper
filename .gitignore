@@ -1,2 +1,4 @@
 /target
 /Cargo.lock
+/www/minesweeper_bg.wasm
+/www/minesweeper.js

@@ -1,5 +1,6 @@
 use super::Positition;
 
+#[derive(Debug)]
 pub struct Mine {
     column: usize,
     row: usize,
@@ -36,13 +37,20 @@ pub struct MineBuilder {
 }
 
 impl MineBuilder {
+
+    pub fn position(&mut self, pos: &Positition) -> &mut Self {
+        self.row = Some(pos.get_row());
+        self.column = Some(pos.get_column());
+        self
+    }
+
     pub fn row(&mut self, row: usize) -> &mut Self {
         self.row = Some(row);
         self
     }
 
     pub fn column(&mut self, column: usize) -> &mut Self {
-        self.row = Some(column);
+        self.column = Some(column);
         self
     }
 
