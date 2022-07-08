@@ -8,6 +8,10 @@ async function load_wasm() {
     } catch (e) {
         console.error(e);
     }
+
 }
 
 document.addEventListener("DOMContentLoaded", load_wasm);
+document.oncontextmenu = document.body.oncontextmenu = function() {
+    return false;
+}

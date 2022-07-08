@@ -1,5 +1,6 @@
 mod mines;
 mod ui;
+mod browser_util;
 
 use ui::App;
 

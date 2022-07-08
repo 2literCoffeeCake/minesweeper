@@ -1,6 +1,6 @@
 
 use yew::{html, Component, Context, Html, Properties};
-use crate::mines::Mine;
+use crate::{mines::Mine, browser_util::console_log};
 
 #[derive(Debug)]
 pub struct Playground {
@@ -13,11 +13,8 @@ pub struct PlaygroundProps{
     pub size: usize,
 }
 
-pub enum Msg {
-}
-
 impl Component for Playground {
-    type Message = Msg;
+    type Message = ();
     type Properties = PlaygroundProps;
 
     fn create(ctx: &Context<Self>) -> Self {
@@ -35,7 +32,6 @@ impl Component for Playground {
 
         let PlaygroundProps { size, amount_bombs: _ } = ctx.props().clone();
 
-
         html! {
             <div class="minefield" style={format!("grid-template-columns: repeat({size}, 50px); grid-template-rows: repeat({size}, 50px);")}>
             {
@@ -52,6 +48,10 @@ impl Component for Playground {
 struct UIMine{
 }
 
+pub enum Msg {
+    OnRightClick,
+    OnLeftClick
+}
 
 #[derive(Clone, PartialEq, Properties)]
 struct UIMineProps{
@@ -59,7 +59,7 @@ struct UIMineProps{
 } 
 
 impl Component for UIMine{
-    type Message = ();
+    type Message = Msg;
 
     type Properties = UIMineProps;
 
@@ -67,7 +67,17 @@ impl Component for UIMine{
         Self {  }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg{
+            Msg::OnRightClick => {
+                console_log("Right")
+            },
+            Msg::OnLeftClick => {
+                console_log("Left")
+            },
+        }
+
+
         true
     }
 
@@ -86,9 +96,12 @@ impl Component for UIMine{
             };
         }
 
+        let on_left_click = ctx.link().callback(|_| Msg::OnLeftClick);
+
+        let on_right_click = ctx.link().callback(|_| Msg::OnRightClick);
 
         html! {
-            <div class="mine" style={style}>
+            <div class="mine" style={style} onclick={on_left_click} oncontextmenu={on_right_click}>
                 {inner_html}
             </div>
         }

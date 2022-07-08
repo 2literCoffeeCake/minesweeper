@@ -24,10 +24,16 @@ impl Mine {
     pub fn generate_mines(size: usize, amount_bombs: usize) -> Vec<Self>{
         let mut mines: Vec<Mine> = Vec::new();
         let mut bombs: Vec<Positition> = Vec::new();
-        for _ in 0..amount_bombs{
-            bombs.push(Positition::get_random(size));
-        }
 
+        loop{
+            if bombs.len() > amount_bombs {
+                break;
+            }
+            let bomb = Positition::get_random(size);
+            if !bombs.iter().any(|bomb_pos|bomb_pos.equals(&bomb)){
+                bombs.push(bomb);
+            }
+        }
 
         for row in 0..size{
             for column in 0..size{
