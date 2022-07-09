@@ -1,6 +1,6 @@
 use rand::Rng;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Positition {
     row: usize,
     column: usize,

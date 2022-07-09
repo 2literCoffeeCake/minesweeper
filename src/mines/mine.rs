@@ -5,12 +5,24 @@ pub struct Mine {
     column: usize,
     row: usize,
     is_bomb: bool,
-    revealed: bool,
+    state: MineState
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MineState{
+    Unknown,
+    Marked,
+    Revealed
 }
 
 impl Mine {
-    pub fn _reveal(&mut self) {
-        self.revealed = true;
+
+    pub fn set_state(&mut self, state:MineState){
+        self.state = state;
+    }
+
+    pub fn get_state(self) -> MineState{
+        self.state
     }
 
     pub fn is_bomb(self) -> bool {
@@ -43,7 +55,8 @@ impl Mine {
                     column, 
                     row, 
                     is_bomb, 
-                    revealed: false 
+                    state: MineState::Unknown
+                     
                 };
                 mines.push(mine);
             }

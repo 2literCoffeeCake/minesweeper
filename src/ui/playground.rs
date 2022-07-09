@@ -1,6 +1,6 @@
 
-use yew::{html, Component, Context, Html, Properties};
-use crate::{mines::Mine, browser_util::console_log};
+use yew::{html, Component, Context, Html, Properties, Callback};
+use crate::{mines::{Mine, MineState, Positition}, browser_util::console_log};
 
 #[derive(Debug)]
 pub struct Playground {
@@ -13,8 +13,12 @@ pub struct PlaygroundProps{
     pub size: usize,
 }
 
+pub enum PlaygroundMsg{
+    OnStateChange(Positition, MineState)
+}
+
 impl Component for Playground {
-    type Message = ();
+    type Message = PlaygroundMsg;
     type Properties = PlaygroundProps;
 
     fn create(ctx: &Context<Self>) -> Self {
@@ -24,21 +28,40 @@ impl Component for Playground {
         }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg{
+            PlaygroundMsg::OnStateChange(pos, state) => {
+                let info = format!("Pos: {:?}; State: {:?}", pos, state);
+                let mut minefield = self.minefield.clone();
+
+                if let Some(mine) = minefield.iter_mut().find(|mine| mine.get_position().equals(&pos)) {
+                    mine.set_state(state);
+                } 
+                self.minefield = minefield;
+
+                console_log(&info);
+            },
+        }
         true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-
         let PlaygroundProps { size, amount_bombs: _ } = ctx.props().clone();
+        let mines = self.minefield.clone().into_iter().map(|mine| {
+            let on_click = ctx.link().callback(move |state: MineState| {
+                PlaygroundMsg::OnStateChange(mine.get_position(), state)
+            });
+            return html!{
+                <>
+                    <UIMine mine={mine} {on_click}/>
+                </>
+            };
+        }).collect::<Html>();
+
 
         html! {
             <div class="minefield" style={format!("grid-template-columns: repeat({size}, 50px); grid-template-rows: repeat({size}, 50px);")}>
-            {
-                self.minefield.clone().into_iter().map(|mine| {
-                    html!{<><UIMine mine={mine}/></>}
-                }).collect::<Html>()
-            }
+            { mines }
             </div>
         }
     }
@@ -55,7 +78,8 @@ pub enum Msg {
 
 #[derive(Clone, PartialEq, Properties)]
 struct UIMineProps{
-    mine: Mine
+    mine: Mine,
+    on_click: Callback<MineState>,
 } 
 
 impl Component for UIMine{
@@ -67,22 +91,21 @@ impl Component for UIMine{
         Self {  }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg{
-            Msg::OnRightClick => {
-                console_log("Right")
-            },
-            Msg::OnLeftClick => {
-                console_log("Left")
-            },
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        let UIMineProps { mine, on_click } = ctx.props().clone();
+        match(msg, mine.get_state()){
+            (Msg::OnRightClick, MineState::Unknown) => on_click.emit(MineState::Marked),
+            (Msg::OnRightClick, MineState::Marked) => on_click.emit(MineState::Unknown),
+            (Msg::OnRightClick, MineState::Revealed) => todo!(),
+            (Msg::OnLeftClick, MineState::Unknown) => on_click.emit(MineState::Revealed),
+            (Msg::OnLeftClick, MineState::Marked) => on_click.emit(MineState::Revealed),
+            (Msg::OnLeftClick, MineState::Revealed) => todo!(),
         }
-
-
         true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let UIMineProps { mine } = ctx.props().clone();
+        let UIMineProps { mine, on_click: _ } = ctx.props().clone();
         let pos = mine.get_position();
         let column = pos.get_column();
         let row = pos.get_row();
