@@ -1,6 +1,6 @@
 
 use yew::{html, Component, Context, Html, Properties, Callback};
-use crate::{mines::{Mine, MineState, Positition}, browser_util::console_log};
+use crate::{mines::{Mine, MineState, Position}, browser_util::console_log};
 use super::Field;
 
 #[derive(Debug)]
@@ -16,7 +16,7 @@ pub struct PlaygroundProps{
 }
 
 pub enum PlaygroundMsg{
-    OnStateChange(Positition, MineState)
+    OnStateChange(Position, MineState)
 }
 
 impl Component for Playground {

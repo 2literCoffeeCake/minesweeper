@@ -1,5 +1,5 @@
 use std::fmt::Display;
-use super::Positition;
+use super::Position;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Mine {
@@ -43,19 +43,19 @@ impl Mine {
         self.is_bomb
     }
 
-    pub fn get_position(self) -> Positition {
-        Positition::new().column(self.column).row(self.row).build()
+    pub fn get_position(self) -> Position {
+        Position::new().column(self.column).row(self.row).build()
     }
 
     pub fn generate_mines(size: usize, amount_bombs: usize) -> Vec<Self>{
         let mut mines: Vec<Mine> = Vec::new();
-        let mut bombs: Vec<Positition> = Vec::new();
+        let mut bombs: Vec<Position> = Vec::new();
 
         loop{
             if bombs.len() >= amount_bombs {
                 break;
             }
-            let bomb = Positition::get_random(size);
+            let bomb = Position::get_random(size);
             if !bombs.iter().any(|bomb_pos|bomb_pos.equals(&bomb)){
                 bombs.push(bomb);
             }
@@ -64,7 +64,7 @@ impl Mine {
 
         for row in 0..size{
             for column in 0..size{
-                let pos = Positition::new().row(row).column(column).build();
+                let pos = Position::new().row(row).column(column).build();
                 let is_bomb = bombs.iter().any(|bomb_pos|bomb_pos.equals(&pos));
                 let mine = Mine { 
                     column, 

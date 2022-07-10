@@ -1,5 +1,5 @@
-mod positition;
+mod position;
 mod mine;
 
-pub use positition::Positition;
+pub use position::Position;
 pub use mine::{Mine, MineState};

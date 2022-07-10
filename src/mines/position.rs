@@ -2,12 +2,12 @@ use std::fmt::Display;
 use rand::Rng;
 
 #[derive(Clone, Copy, Debug)]
-pub struct Positition {
+pub struct Position {
     row: usize,
     column: usize,
 }
 
-impl Positition {
+impl Position {
     pub fn new() -> PositionBuilder {
         PositionBuilder {
             row: None,
@@ -30,12 +30,32 @@ impl Positition {
         }
     }
 
-    pub fn equals(&self, pos: &Positition) -> bool{
+    // pub fn get_neighbors(&self) -> Vec<Positition>{
+    //     let mut result = Vec::new();
+    //     let row = self.row as i8;
+    //     let column = self.column as i8;
+
+
+    //     for delta_row in -1..=1 {
+    //         for delta_column in -1..=1 {
+    //             let tmp_row = row + delta_row;
+    //             let tmp_column = column + delta_column;
+    //             if tmp_column >= 0 && tmp_row >= 0 {
+    //                 result.push(Position::new());
+    //             }
+
+    //         }   
+    //     }
+
+    //     result
+    // }
+
+    pub fn equals(&self, pos: &Self) -> bool{
         self.column == pos.column && self.row == pos.row
     }
 }
 
-impl Display for Positition{
+impl Display for Position{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{row}/{column}", row=self.row, column=self.column)
     }
@@ -57,8 +77,8 @@ impl PositionBuilder {
         self
     }
 
-    pub fn build(&mut self) -> Positition {
-        Positition {
+    pub fn build(&mut self) -> Position {
+        Position {
             row: self.row.unwrap_or(0),
             column: self.column.unwrap_or(0),
         }

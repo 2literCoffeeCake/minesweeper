@@ -25,7 +25,7 @@ impl Component for App {
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self{
-            amount_bombs: 9,
+            amount_bombs: 12,
             size: 8,
             game_state: GameState::Playing
         }
