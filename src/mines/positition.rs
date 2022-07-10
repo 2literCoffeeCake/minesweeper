@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use rand::Rng;
 
 #[derive(Clone, Copy, Debug)]
@@ -24,13 +25,19 @@ impl Positition {
 
     pub fn get_random(max_value: usize) -> Self {
         Self {
-            row: rand::thread_rng().gen_range(0..=max_value),
-            column: rand::thread_rng().gen_range(0..=max_value),
+            row: rand::thread_rng().gen_range(0..=(max_value-1)),
+            column: rand::thread_rng().gen_range(0..=(max_value-1)),
         }
     }
 
     pub fn equals(&self, pos: &Positition) -> bool{
         self.column == pos.column && self.row == pos.row
+    }
+}
+
+impl Display for Positition{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{row}/{column}", row=self.row, column=self.column)
     }
 }
 

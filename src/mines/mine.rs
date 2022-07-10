@@ -1,5 +1,4 @@
 use std::fmt::Display;
-
 use super::Positition;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -30,8 +29,10 @@ impl Display for MineState{
 
 impl Mine {
 
-    pub fn set_state(&mut self, state:MineState){
-        self.state = state;
+    pub fn set_state(&mut self, state: MineState){
+        if self.state != MineState::Revealed{
+            self.state = state;
+        }
     }
 
     pub fn get_state(self) -> MineState{
@@ -51,7 +52,7 @@ impl Mine {
         let mut bombs: Vec<Positition> = Vec::new();
 
         loop{
-            if bombs.len() > amount_bombs {
+            if bombs.len() >= amount_bombs {
                 break;
             }
             let bomb = Positition::get_random(size);
@@ -59,6 +60,7 @@ impl Mine {
                 bombs.push(bomb);
             }
         }
+
 
         for row in 0..size{
             for column in 0..size{
