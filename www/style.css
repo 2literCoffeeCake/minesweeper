@@ -1,7 +1,8 @@
 :root{
-    --mine-border-color: #455a64;
-    --mine-background-color: #90a4ae;
-
+    --mine-unrevealed: #37474f;
+    --mine-revealed: #90a4ae;
+    --font-color-light: #eceff1;
+    --font-color-dark: #263238;
 }
 
 *{
@@ -22,15 +23,26 @@
     display: grid;
     grid-column: 3/4;
     grid-row: 2/3;
-    border: 0.5px solid var(--mine-border-color);
 }
 
-.field{
-    border: 0.5px solid var(--mine-border-color);
-    background-color: var(--mine-background-color);
+.mine{
+    border: 0.5px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: xxx-large;
-    color: white;
+    border-radius: 5px;
+ 
+}
+
+.mine--revealed{
+    background-color: var(--mine-revealed);
+    padding: 5px;
+    fill: var(--font-color-dark);
+}
+
+.mine--unrevealed{
+    background-color: var(--mine-unrevealed);
+    padding: 10px;
+    fill: var(--font-color-light);
 }

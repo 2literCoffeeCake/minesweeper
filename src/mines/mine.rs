@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use super::Positition;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -13,6 +15,17 @@ pub enum MineState{
     Unknown,
     Marked,
     Revealed
+}
+
+impl Display for MineState{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self{
+            MineState::Unknown => "Unknown",
+            MineState::Marked => "Marked",
+            MineState::Revealed => "Revealed",
+        };
+        write!(f, "{s}")
+    }
 }
 
 impl Mine {
