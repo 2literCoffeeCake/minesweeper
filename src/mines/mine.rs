@@ -6,7 +6,8 @@ pub struct Mine {
     column: usize,
     row: usize,
     is_bomb: bool,
-    state: MineState
+    state: MineState,
+    amount_neighbors: usize
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -47,31 +48,36 @@ impl Mine {
         Position::new().column(self.column).row(self.row).build()
     }
 
+    pub fn get_amount_neighbors(&self) -> usize{
+        self.amount_neighbors
+    }
+
     pub fn generate_mines(size: usize, amount_bombs: usize) -> Vec<Self>{
         let mut mines: Vec<Mine> = Vec::new();
         let mut bombs: Vec<Position> = Vec::new();
-
+        let mut neighbors: Vec<Position> = Vec::new();
         loop{
             if bombs.len() >= amount_bombs {
                 break;
             }
             let bomb = Position::get_random(size);
             if !bombs.iter().any(|bomb_pos|bomb_pos.equals(&bomb)){
+                neighbors.append(&mut bomb.get_neighbors());
                 bombs.push(bomb);
             }
         }
-
 
         for row in 0..size{
             for column in 0..size{
                 let pos = Position::new().row(row).column(column).build();
                 let is_bomb = bombs.iter().any(|bomb_pos|bomb_pos.equals(&pos));
+                let amount_neighbors = neighbors.iter().filter(|mine_pos|mine_pos.equals(&pos)).count();
                 let mine = Mine { 
                     column, 
                     row, 
                     is_bomb, 
-                    state: MineState::Unknown
-                     
+                    state: MineState::Unknown,
+                    amount_neighbors: amount_neighbors
                 };
                 mines.push(mine);
             }

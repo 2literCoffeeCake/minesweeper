@@ -30,25 +30,24 @@ impl Position {
         }
     }
 
-    // pub fn get_neighbors(&self) -> Vec<Positition>{
-    //     let mut result = Vec::new();
-    //     let row = self.row as i8;
-    //     let column = self.column as i8;
-
-
-    //     for delta_row in -1..=1 {
-    //         for delta_column in -1..=1 {
-    //             let tmp_row = row + delta_row;
-    //             let tmp_column = column + delta_column;
-    //             if tmp_column >= 0 && tmp_row >= 0 {
-    //                 result.push(Position::new());
-    //             }
-
-    //         }   
-    //     }
-
-    //     result
-    // }
+    pub fn get_neighbors(&self) -> Vec<Self>{
+        let mut result = Vec::new();
+        let row = self.row as i8;
+        let column = self.column as i8;
+        for delta_row in -1..=1 {
+            for delta_column in -1..=1 {
+                let tmp_row = row + delta_row;
+                let tmp_column = column + delta_column;
+                if tmp_column >= 0 && tmp_row >= 0 {
+                    result.push(Self{
+                        column: tmp_column as usize,
+                        row: tmp_row as usize
+                    });
+                }
+            }   
+        }
+        result
+    }
 
     pub fn equals(&self, pos: &Self) -> bool{
         self.column == pos.column && self.row == pos.row

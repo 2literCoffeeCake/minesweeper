@@ -5,12 +5,19 @@
     --font-color-dark: #263238;
 }
 
+@font-face {
+    font-family: roboto;
+    src: url(Roboto-Regular.ttf);
+  }
+
 *{
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: roboto;
+    font-size: 0.7em;
 }
 
 .app{
@@ -35,14 +42,22 @@
  
 }
 
+.mine > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .mine--revealed{
     background-color: var(--mine-revealed);
     padding: 5px;
     fill: var(--font-color-dark);
+    cursor: context-menu;
 }
 
 .mine--unrevealed{
     background-color: var(--mine-unrevealed);
     padding: 10px;
     fill: var(--font-color-light);
+    cursor: pointer;
 }
