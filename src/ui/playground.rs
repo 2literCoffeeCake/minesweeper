@@ -64,6 +64,7 @@ impl Component for Playground {
             amount_bombs: _,
             on_bomb_click: _,
         } = ctx.props().clone();
+
         let mines = self
             .minefield
             .clone()
@@ -79,6 +80,7 @@ impl Component for Playground {
                 };
             })
             .collect::<Html>();
+
 
         html! {
             <div class="minefield" style={format!("grid-template-columns: repeat({size}, 50px); grid-template-rows: repeat({size}, 50px);")}>
