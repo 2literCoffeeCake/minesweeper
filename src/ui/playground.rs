@@ -48,8 +48,12 @@ impl Component for Playground {
                     .find(|mine| mine.get_position().equals(&pos))
                 {
                     mine.set_state(state);
-                    if state == MineState::Revealed && mine.is_bomb(){
-                        on_bomb_click.emit(());
+                    if state == MineState::Revealed{
+                        if mine.is_bomb() {
+                            on_bomb_click.emit(());
+                        } else if mine.get_amount_neighbors() == 0 {
+                            reveal_neighbors(pos, &mut minefield);
+                        }
                     }
                 }
                 self.minefield = minefield;
@@ -87,5 +91,13 @@ impl Component for Playground {
                 { mines }
             </div>
         }
+    }
+}
+
+fn reveal_neighbors(pos: Position, minefield: &mut Vec<Mine>){
+    let n = pos.get_neighbors();
+    let vec: Vec<&mut Mine> =  minefield.iter_mut().filter(|mine| n.iter().position(|p| p.equals(&mine.get_position())).is_some()).collect();
+    for mine in vec{
+        mine.set_state(MineState::Revealed);
     }
 }

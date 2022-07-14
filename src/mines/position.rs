@@ -36,13 +36,15 @@ impl Position {
         let column = self.column as i8;
         for delta_row in -1..=1 {
             for delta_column in -1..=1 {
-                let tmp_row = row + delta_row;
-                let tmp_column = column + delta_column;
-                if tmp_column >= 0 && tmp_row >= 0 {
-                    result.push(Self{
-                        column: tmp_column as usize,
-                        row: tmp_row as usize
-                    });
+                if delta_column != 0 || delta_row != 0 {
+                    let tmp_row = row + delta_row;
+                    let tmp_column = column + delta_column;
+                    if tmp_column >= 0 && tmp_row >= 0 {
+                        result.push(Self{
+                            column: tmp_column as usize,
+                            row: tmp_row as usize
+                        });
+                    }
                 }
             }   
         }
