@@ -46,6 +46,10 @@ impl Mine {
         }
     }
 
+    pub fn reveal(&mut self){
+        self.set_state(MineState::Revealed);
+    }
+
     pub fn get_state(self) -> MineState{
         self.state
     }
@@ -58,7 +62,7 @@ impl Mine {
         Position::new().column(self.column).row(self.row).build()
     }
 
-    pub fn get_amount_neighbors(&self) -> usize{
+    pub fn get_number_of_neighboring_bombs(&self) -> usize{
         self.amount_neighbors
     }
 

@@ -62,7 +62,7 @@ impl Component for Field{
 
 fn get_inner_html(mine: Mine) -> VNode{
     let state = mine.get_state();
-    let neighbors = mine.get_amount_neighbors();
+    let neighbors = mine.get_number_of_neighboring_bombs();
 
     let mut inner_html = html!{
         <></>
@@ -101,7 +101,7 @@ fn get_inner_html(mine: Mine) -> VNode{
                 };
                 inner_html = html!{
                     <div style={format!("color: {color}")}>
-                        {mine.get_amount_neighbors()}
+                        {mine.get_number_of_neighboring_bombs()}
                     </div>
                 };
             }

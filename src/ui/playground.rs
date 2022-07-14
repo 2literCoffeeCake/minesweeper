@@ -1,5 +1,5 @@
 use super::Field;
-use crate::{mines::{Mine, MineState, Position}};
+use crate::mines::{Mine, MineState, Position};
 use yew::{html, Callback, Component, Context, Html, Properties};
 
 #[derive(Debug)]
@@ -48,11 +48,11 @@ impl Component for Playground {
                     .find(|mine| mine.get_position().equals(&pos))
                 {
                     mine.set_state(state);
-                    if state == MineState::Revealed{
+                    if state == MineState::Revealed {
                         if mine.is_bomb() {
                             on_bomb_click.emit(());
-                        } else if mine.get_amount_neighbors() == 0 {
-                            reveal_neighbors(pos, &mut minefield);
+                        } else if mine.get_number_of_neighboring_bombs() == 0 {
+                            some_outer_function(&pos, &mut minefield);
                         }
                     }
                 }
@@ -85,7 +85,6 @@ impl Component for Playground {
             })
             .collect::<Html>();
 
-
         html! {
             <div class="minefield" style={format!("grid-template-columns: repeat({size}, 50px); grid-template-rows: repeat({size}, 50px);")}>
                 { mines }
@@ -94,10 +93,33 @@ impl Component for Playground {
     }
 }
 
-fn reveal_neighbors(pos: Position, minefield: &mut Vec<Mine>){
-    let n = pos.get_neighbors();
-    let vec: Vec<&mut Mine> =  minefield.iter_mut().filter(|mine| n.iter().position(|p| p.equals(&mine.get_position())).is_some()).collect();
-    for mine in vec{
-        mine.set_state(MineState::Revealed);
+fn reveal_neighbors(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> {
+    let neighbors = pos.get_neighbors();
+    let mut tmp = Vec::<Position>::new();
+    minefield
+        .iter_mut()
+        .filter(|mine| {
+            neighbors
+                .iter()
+                .position(|p| p.equals(&mine.get_position()))
+                .is_some()
+        })
+        .for_each(|mine| {
+            if mine.get_state() != MineState::Revealed && mine.get_number_of_neighboring_bombs() == 0 {
+                tmp.push(mine.get_position());
+            }
+            mine.reveal();
+
+        });
+    tmp
+}
+
+fn some_outer_function(pos: &Position, minefield: &mut Vec<Mine>){
+    let pos_vec = reveal_neighbors(&pos, minefield);
+    for inner_pos in pos_vec{
+        let some_vec = reveal_neighbors(&inner_pos, minefield);
+        for outer_pos in some_vec{
+            some_outer_function(&outer_pos, minefield);
+        }
     }
 }
