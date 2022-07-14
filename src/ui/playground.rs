@@ -94,7 +94,7 @@ impl Component for Playground {
 }
 
 fn reveal_neighbors(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> {
-    let neighbors = pos.get_neighbors();
+    let neighbors = get_neighbors(pos);
     let mut tmp = Vec::<Position>::new();
     minefield
         .iter_mut()
@@ -122,4 +122,26 @@ fn some_outer_function(pos: &Position, minefield: &mut Vec<Mine>){
             some_outer_function(&outer_pos, minefield);
         }
     }
+}
+
+fn get_neighbors(pos: &Position) -> Vec<Position>{
+    let mut result = Vec::new();
+    let row = pos.get_row() as i8;
+    let column = pos.get_column() as i8;
+    for delta_row in -1..=1 {
+        for delta_column in -1..=1 {
+            if !compare_i8(delta_column, delta_row) {
+                let tmp_row = row + delta_row;
+                let tmp_column = column + delta_column;
+                if tmp_column >= 0 && tmp_row >= 0 {
+                    result.push(Position::new().column(tmp_column as usize).row(tmp_row as usize).build());
+                }
+            }
+        }   
+    }
+    result
+}
+
+fn compare_i8(a: i8, b: i8) -> bool{
+    (a*a) == (b*b)
 }
