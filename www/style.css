@@ -3,6 +3,8 @@
     --mine-revealed: #90a4ae;
     --font-color-light: #eceff1;
     --font-color-dark: #263238;
+
+    --button-height: 60px;
 }
 
 @font-face {
@@ -31,8 +33,30 @@
     grid-row: 1/2;
 
     display: grid;
-    grid-template-columns: 1fr 50px auto 50px 1fr;
-    grid-template-rows: 1fr 50px auto 50px 2fr;
+    grid-template-columns: 1fr var(--button-height) auto var(--button-height) 1fr;
+    grid-template-rows: 1fr var(--button-height) auto var(--button-height) 2fr;
+}
+
+.playground__button{
+    border: var(--font-color-dark) 5px solid;
+    border-radius: var(--button-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.playground__button > svg{
+    height: 75%;
+    fill: var(--font-color-dark);
+}
+
+.playground__button:hover{
+    cursor: pointer;
+    background-color: var(--mine-revealed);
+}
+
+.playground__button:hover>svg{
+    fill: var(--font-color-dark)
 }
 
 .minefield{
