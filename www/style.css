@@ -20,16 +20,25 @@
     font-size: 0.7em;
 }
 
-.app{
+.game{
     display: grid;
-    grid-template-columns: 400px 1fr auto 3fr;
-    grid-template-rows: 1fr auto 2fr;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.playground{
+    grid-column: 1/2;
+    grid-row: 1/2;
+
+    display: grid;
+    grid-template-columns: 1fr 50px auto 50px 1fr;
+    grid-template-rows: 1fr 50px auto 50px 2fr;
 }
 
 .minefield{
     display: grid;
     grid-column: 3/4;
-    grid-row: 2/3;
+    grid-row: 3/4;
 }
 
 .mine{

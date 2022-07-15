@@ -1,7 +1,9 @@
 mod app;
 mod playground;
 mod field;
+mod minefield;
 
 pub use app::App;
-pub use playground::{Playground, PlaygroundProps};
-pub use field::{Field, FieldProps};
+use playground::Playground;
+use field::Field;
+use minefield::Minefield;

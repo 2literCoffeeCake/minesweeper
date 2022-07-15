@@ -12,7 +12,8 @@ pub struct App {
 #[derive(Debug)]
 enum GameState{
     Playing,
-    GameOver
+    GameOver,
+    _Pausing
 }
 
 pub enum Msg {
@@ -25,7 +26,7 @@ impl Component for App {
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self{
-            amount_bombs: 9,
+            amount_bombs: 12,
             size: 8,
             game_state: GameState::Playing
         }
@@ -45,9 +46,9 @@ impl Component for App {
 
 
         html! {
-            <div class="app">
+            <>
                 <Playground size={self.size} amount_bombs={self.amount_bombs} {on_bomb_click}/>
-            </div>
+            </>
         }
     }
 }

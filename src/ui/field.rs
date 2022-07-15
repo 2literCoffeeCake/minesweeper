@@ -97,7 +97,7 @@ fn get_inner_html(mine: Mine) -> VNode{
                     2 => "#2e7d32",
                     3 => "#d32f2f",
                     4 => "#303f9f",
-                    _ => "var(--mine-revealed)"
+                    _ => "#d50000"
                 };
                 inner_html = html!{
                     <div style={format!("color: {color}")}>
