@@ -10,7 +10,7 @@ pub enum Msg {
 }
 
 #[derive(Clone, PartialEq, Properties)]
-pub struct FieldProps{
+pub struct Props{
     pub mine: Mine,
     pub on_click: Callback<MineState>,
 } 
@@ -18,14 +18,14 @@ pub struct FieldProps{
 impl Component for Field{
     type Message = Msg;
 
-    type Properties = FieldProps;
+    type Properties = Props;
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self {  }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        let FieldProps { mine, on_click } = ctx.props().clone();
+        let Props { mine, on_click } = ctx.props().clone();
         match(msg, mine.get_state()){
             (Msg::OnRightClick, MineState::Unknown) => on_click.emit(MineState::Marked(1)),
             (Msg::OnRightClick, MineState::Marked(level)) => {
@@ -43,7 +43,7 @@ impl Component for Field{
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let FieldProps { mine, on_click: _ } = ctx.props().clone();
+        let Props { mine, on_click: _ } = ctx.props().clone();
         
         let inner_html = get_inner_html(mine);
         let style = get_style(mine);
