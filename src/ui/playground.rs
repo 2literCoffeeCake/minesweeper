@@ -3,7 +3,7 @@ use super::Minefield;
 use yew::{html, Callback, Component, Context, Html, Properties};
 
 #[derive(Debug)]
-pub struct Playground {}
+pub struct Playground;
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
@@ -17,7 +17,7 @@ impl Component for Playground {
     type Properties = Props;
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self {}
+        Self
     }
 
     fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {

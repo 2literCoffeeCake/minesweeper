@@ -50,9 +50,10 @@ impl Component for Minefield {
                     mine.set_state(state);
                     if state == MineState::Revealed {
                         if mine.is_bomb() {
+                            reveal_all(&mut minefield);
                             on_bomb_click.emit(());
                         } else if mine.get_number_of_neighboring_bombs() == 0 {
-                            some_outer_function(&pos, &mut minefield);
+                            reveal_neighbors_outer(&pos, &mut minefield);
                         }
                     }
                 }
@@ -95,7 +96,7 @@ impl Component for Minefield {
     }
 }
 
-fn reveal_neighbors(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> {
+fn reveal_neighbors_inner(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> {
     let neighbors = pos.get_neighbors();
     let mut tmp = Vec::<Position>::new();
     minefield
@@ -116,12 +117,18 @@ fn reveal_neighbors(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> 
     tmp
 }
 
-fn some_outer_function(pos: &Position, minefield: &mut Vec<Mine>){
-    let pos_vec = reveal_neighbors(&pos, minefield);
+fn reveal_neighbors_outer(pos: &Position, minefield: &mut Vec<Mine>){
+    let pos_vec = reveal_neighbors_inner(&pos, minefield);
     for inner_pos in pos_vec{
-        let some_vec = reveal_neighbors(&inner_pos, minefield);
+        let some_vec = reveal_neighbors_inner(&inner_pos, minefield);
         for outer_pos in some_vec{
-            some_outer_function(&outer_pos, minefield);
+            reveal_neighbors_outer(&outer_pos, minefield);
         }
+    }
+}
+
+fn reveal_all(minefield: &mut Vec<Mine>){
+    for mine in minefield{
+        mine.reveal();
     }
 }

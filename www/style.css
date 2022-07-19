@@ -22,6 +22,12 @@
     font-size: 0.7em;
 }
 
+.app{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
 .game{
     display: grid;
     grid-template-columns: 3fr 1fr;

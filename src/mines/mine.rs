@@ -13,7 +13,7 @@ pub struct Mine {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MineState{
     Unknown,
-    Marked(usize),
+    Marked,
     Revealed
 }
 
@@ -21,7 +21,7 @@ impl Display for MineState{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self{
             MineState::Unknown => write!(f, "Unknown"),
-            MineState::Marked(level) => write!(f, "Marked Level: {level}"),
+            MineState::Marked => write!(f, "Marked Level"),
             MineState::Revealed => write!(f, "Revealed"),
         }
         
@@ -32,16 +32,6 @@ impl Mine {
 
     pub fn set_state(&mut self, state: MineState){
         if self.state != MineState::Revealed{
-            let state = match state{
-                MineState::Marked(level) => {
-                    let mut state = MineState::Marked(level);
-                    if level > 2 || level < 1 {
-                        state =  MineState::Unknown;
-                    }
-                    state
-                },
-                state => state
-            };
             self.state = state;
         }
     }

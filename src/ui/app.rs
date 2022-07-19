@@ -26,8 +26,8 @@ impl Component for App {
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self{
-            amount_bombs: 13,
-            size: 10,
+            amount_bombs: 9,
+            size: 8,
             game_state: GameState::Playing
         }
     }
@@ -46,9 +46,10 @@ impl Component for App {
 
 
         html! {
-            <>
+            <div class="app">
                 <Playground size={self.size} amount_bombs={self.amount_bombs} {on_bomb_click}/>
-            </>
+                <div class="menu--closed" id="menu"></div>
+            </div>
         }
     }
 }
