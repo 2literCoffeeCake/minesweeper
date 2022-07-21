@@ -1,26 +1,43 @@
-use super::Minefield;
+use super::{Minefield, Button, Menu, MenuAction};
 
-use yew::{html, Callback, Component, Context, Html, Properties};
+use yew::{html, Component, Context, Html, Properties};
 
 #[derive(Debug)]
-pub struct Playground;
+pub struct Playground{
+    state: GameState
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum GameState{
+    Playing,
+    GameOver,
+    Pausing
+}
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     pub amount_bombs: usize,
     pub size: usize,
-    pub on_bomb_click: Callback<()>,
+}
+
+pub enum Msg{
+    SetPlayingState(GameState)
 }
 
 impl Component for Playground {
-    type Message = ();
+    type Message = Msg;
     type Properties = Props;
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self
+        Self{
+            state: GameState::Playing
+        }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg{
+            Msg::SetPlayingState(state) => self.state = state,
+        }
         true
     }
 
@@ -28,55 +45,40 @@ impl Component for Playground {
         let Props {
             size,
             amount_bombs,
-            on_bomb_click,
         } = ctx.props().clone();
+
+        let on_back_button_click = ctx.link().callback(|_| Msg::SetPlayingState(GameState::Pausing));
+        let on_menu_button_click = ctx.link().callback(|_| Msg::SetPlayingState(GameState::Pausing));
+        let on_bomb_click = ctx.link().callback(|_| Msg::SetPlayingState(GameState::GameOver));
+
+        let on_item_click = ctx.link().callback(|menu_action| {
+            match menu_action{
+                MenuAction::Continue => Msg::SetPlayingState(GameState::Playing),
+                MenuAction::BackToMainMenu => todo!(),
+                MenuAction::NewGame => todo!(),
+            }
+        });
+
+        let menu_active = self.state != GameState::Playing;
 
         html! {
             <div class="game">
                 <div class="playground">
-                    <div class="playground__button" style="grid-column: 2/3; grid-row: 2/3">
+                    <Button on_click={on_back_button_click} row={2}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                             <path d="M272 431.952v-73.798h128c26.51 0 48-21.49 48-48V201.846c0-26.51-21.49-48-48-48H272V80.057c0-42.638-51.731-64.15-81.941-33.941l-176 175.943c-18.745 18.745-18.746 49.137 0 67.882l176 175.952C220.208 496.042 272 474.675 272 431.952zM48 256L224 80v121.846h176v108.308H224V432L48 256z"/>
                         </svg>
-                    </div>
-                    <div class="playground__button" style="grid-column: 2/3; grid-row: 4/5">
+                    </Button>
+                    <Button on_click={on_menu_button_click} row={4}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                             <path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"/>
                         </svg>
-                    </div>
+                    </Button>
                     <Minefield size={size} amount_bombs={amount_bombs} {on_bomb_click}/>
-
                 </div>
-                <Info />
+                <Menu title="Pause" {on_item_click} active={menu_active}/>
             </div>
         }
     }
 }
 
-struct Info{
-    
-}
-
-impl Component for Info{
-    type Message = ();
-
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self {  }
-    }
-
-    fn view(&self, _ctx: &Context<Self>) -> Html {
-        html!{
-            <div class="game__info">
-                <div class="game__info__box" style="grid-column: 2/3;grid-row: 2/3;">
-                    
-                </div>
-
-                <div class="game__info__box" style="grid-column: 2/3;grid-row: 4/5;">
-                
-                </div>
-            </div>
-        }
-    }
-}
