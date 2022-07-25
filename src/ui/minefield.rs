@@ -1,10 +1,12 @@
 use super::Field;
 use crate::mines::{Mine, MineState, Position};
 use yew::{html, Callback, Component, Context, Html, Properties};
+use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct Minefield{
     mines: Vec<Mine>,
+    game_id: Uuid,
 }
 
 #[derive(Clone, PartialEq, Properties)]
@@ -12,6 +14,7 @@ pub struct Props {
     pub amount_bombs: usize,
     pub size: usize,
     pub on_bomb_click: Callback<()>,
+    pub game_id: Uuid,
 }
 
 pub enum Msg {
@@ -27,9 +30,11 @@ impl Component for Minefield {
             size,
             amount_bombs,
             on_bomb_click: _,
+            game_id
         } = ctx.props().clone();
         Self {
             mines: Mine::generate_mines(size, amount_bombs),
+            game_id
         }
     }
 
@@ -38,6 +43,7 @@ impl Component for Minefield {
             size: _,
             amount_bombs: _,
             on_bomb_click,
+            game_id: _
         } = ctx.props().clone();
 
         match msg {
@@ -63,11 +69,27 @@ impl Component for Minefield {
         true
     }
 
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        let Props {
+            size,
+            amount_bombs,
+            on_bomb_click: _,
+            game_id
+        } = ctx.props().clone();
+
+        if self.game_id != game_id {
+            self.mines = Mine::generate_mines(size, amount_bombs);
+            self.game_id = game_id;
+        }
+        true
+    }
+
     fn view(&self, ctx: &Context<Self>) -> Html {
         let Props {
             size,
             amount_bombs: _,
             on_bomb_click: _,
+            game_id: _
         } = ctx.props().clone();
 
         let mines = self
@@ -94,6 +116,8 @@ impl Component for Minefield {
             </>
         }
     }
+
+
 }
 
 fn reveal_neighbors_inner(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> {

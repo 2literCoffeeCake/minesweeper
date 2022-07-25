@@ -1,10 +1,11 @@
 use super::{Minefield, Button, Menu, MenuAction};
-
 use yew::{html, Component, Context, Html, Properties};
+use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct Playground{
-    state: GameState
+    state: GameState,
+    game_id: Uuid
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -21,7 +22,9 @@ pub struct Props {
 }
 
 pub enum Msg{
-    SetPlayingState(GameState)
+    SetPlayingState(GameState),
+    NewGame,
+    BackToMainMenu
 }
 
 impl Component for Playground {
@@ -30,13 +33,19 @@ impl Component for Playground {
 
     fn create(_ctx: &Context<Self>) -> Self {
         Self{
-            state: GameState::Playing
+            state: GameState::Playing,
+            game_id: Uuid::new_v4(),
         }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg{
             Msg::SetPlayingState(state) => self.state = state,
+            Msg::NewGame => {
+                self.state = GameState::Playing;
+                self.game_id = Uuid::new_v4();
+            },
+            Msg::BackToMainMenu => todo!(),
         }
         true
     }
@@ -54,8 +63,8 @@ impl Component for Playground {
         let on_item_click = ctx.link().callback(|menu_action| {
             match menu_action{
                 MenuAction::Continue => Msg::SetPlayingState(GameState::Playing),
-                MenuAction::BackToMainMenu => todo!(),
-                MenuAction::NewGame => todo!(),
+                MenuAction::BackToMainMenu => Msg::BackToMainMenu,
+                MenuAction::NewGame => Msg::NewGame,
             }
         });
 
@@ -74,7 +83,7 @@ impl Component for Playground {
                             <path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"/>
                         </svg>
                     </Button>
-                    <Minefield size={size} amount_bombs={amount_bombs} {on_bomb_click}/>
+                    <Minefield size={size} amount_bombs={amount_bombs} {on_bomb_click} game_id={self.game_id}/>
                 </div>
                 <Menu title="Pause" {on_item_click} active={menu_active}/>
             </div>

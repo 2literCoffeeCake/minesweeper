@@ -1,55 +1,87 @@
 use yew::{html, Callback, Component, Context, Html, Properties};
 
-pub enum MenuAction{
+#[derive(Clone, Copy)]
+pub enum MenuAction {
     Continue,
     BackToMainMenu,
-    NewGame
+    NewGame,
 }
-pub struct Menu;
+
+impl ToString for MenuAction {
+    fn to_string(&self) -> String {
+        let tmp = match self {
+            MenuAction::Continue => "Continue",
+            MenuAction::BackToMainMenu => "Back to main menu",
+            MenuAction::NewGame => "New game",
+        };
+        String::from(tmp)
+    }
+}
+pub struct Menu {
+    actions: Vec<MenuAction>,
+}
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     pub title: String,
     pub on_item_click: Callback<MenuAction>,
-    pub active: bool
+    pub active: bool,
 }
 
-
-
-impl Component for Menu{
+impl Component for Menu {
     type Message = ();
 
     type Properties = Props;
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self
+        let mut vec = Vec::new();
+        vec.push(MenuAction::Continue);
+        vec.push(MenuAction::NewGame);
+        vec.push(MenuAction::BackToMainMenu);
+
+        Self { actions: vec }
+    }
+
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
+        false
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let Props {
             title,
             active,
-            on_item_click
+            on_item_click: _,
         } = ctx.props().clone();
-        
-        let on_click = ctx.link().callback(move|_| on_item_click.emit(MenuAction::Continue));
 
+        let items = self
+            .actions
+            .clone()
+            .into_iter()
+            .enumerate()
+            .map(|(index, action)| {
+                let on_item_click = ctx.props().clone().on_item_click;
+                let on_click = ctx.link().callback(move|_| on_item_click.emit(action));
+                return html! {
+                    <>
+                        <div style={format!("grid-row: {}/{};font-size: 50px;", (4 + (2*index)).to_string(), (5 + (2*index)).to_string())} class="menu_menu_item" onclick={on_click}>{action.to_string()}</div>
+                    </>
+                };
+            })
+            .collect::<Html>();
 
         let classes = get_classes(active);
-        html!{
+        html! {
             <div class={classes}>
                 <div style={"grid-row: 2/3;font-size: 90px;"} class="menu_menu_item">{title}</div>
-                <div style={"grid-row: 4/5;font-size: 50px;"} class="menu_menu_item" onclick={on_click}>{"Continue"}</div>
-                <div style={"grid-row: 6/7;font-size: 50px;"} class="menu_menu_item">{"New game"}</div>
-                <div style={"grid-row: 8/9;font-size: 50px;"} class="menu_menu_item">{"Back to main menu"}</div>
+                {items}
             </div>
         }
     }
 }
 
-fn get_classes(active: bool) -> String{
+fn get_classes(active: bool) -> String {
     let mut classes = String::from("menu ");
-    if active{
+    if active {
         classes.push_str("menu--active");
     } else {
         classes.push_str("menu--inactive");
