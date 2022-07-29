@@ -26,6 +26,7 @@ pub struct Props {
     pub title: String,
     pub on_item_click: Callback<MenuAction>,
     pub active: bool,
+    pub continue_button_active: bool,
 }
 
 impl Component for Menu {
@@ -33,23 +34,35 @@ impl Component for Menu {
 
     type Properties = Props;
 
-    fn create(_ctx: &Context<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         let mut vec = Vec::new();
-        vec.push(MenuAction::Continue);
+        if ctx.props().clone().continue_button_active {
+            vec.push(MenuAction::Continue);
+        }
         vec.push(MenuAction::NewGame);
         vec.push(MenuAction::BackToMainMenu);
 
         Self { actions: vec }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        false
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        let mut vec = Vec::new();
+        if ctx.props().clone().continue_button_active {
+            vec.push(MenuAction::Continue);
+        }
+        vec.push(MenuAction::NewGame);
+        vec.push(MenuAction::BackToMainMenu);
+
+        self.actions = vec;
+        
+        true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let Props {
             title,
             active,
+            continue_button_active: _,
             on_item_click: _,
         } = ctx.props().clone();
 

@@ -12,7 +12,8 @@ pub struct Playground{
 pub enum GameState{
     Playing,
     GameOver,
-    Pausing
+    Pausing,
+    Success
 }
 
 #[derive(Clone, PartialEq, Properties)]
@@ -69,6 +70,13 @@ impl Component for Playground {
         });
 
         let menu_active = self.state != GameState::Playing;
+        let continue_button_active = self.state == GameState::Pausing;
+        let title = match self.state{
+            GameState::Playing => "",
+            GameState::GameOver => "Game over",
+            GameState::Pausing => "Pause",
+            GameState::Success => "You've won",
+        };
 
         html! {
             <div class="game">
@@ -85,7 +93,7 @@ impl Component for Playground {
                     </Button>
                     <Minefield size={size} amount_bombs={amount_bombs} {on_bomb_click} game_id={self.game_id}/>
                 </div>
-                <Menu title="Pause" {on_item_click} active={menu_active}/>
+                <Menu title={title} {on_item_click} active={menu_active} {continue_button_active}/>
             </div>
         }
     }

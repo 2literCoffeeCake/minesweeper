@@ -1,10 +1,10 @@
 use super::Field;
-use crate::mines::{Mine, MineState, Position};
-use yew::{html, Callback, Component, Context, Html, Properties};
+use crate::mines::{Mine, MineState, MineVec, Position};
 use uuid::Uuid;
+use yew::{html, Callback, Component, Context, Html, Properties};
 
 #[derive(Debug)]
-pub struct Minefield{
+pub struct Minefield {
     mines: Vec<Mine>,
     game_id: Uuid,
 }
@@ -30,36 +30,28 @@ impl Component for Minefield {
             size,
             amount_bombs,
             on_bomb_click: _,
-            game_id
+            game_id,
         } = ctx.props().clone();
         Self {
             mines: Mine::generate_mines(size, amount_bombs),
-            game_id
+            game_id,
         }
     }
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
-        let Props {
-            size: _,
-            amount_bombs: _,
-            on_bomb_click,
-            game_id: _
-        } = ctx.props().clone();
+        let on_bomb_click = ctx.props().clone().on_bomb_click;
 
         match msg {
             Msg::OnStateChange(pos, state) => {
                 let mut minefield = self.mines.clone();
-                if let Some(mine) = minefield
-                    .iter_mut()
-                    .find(|mine| mine.get_position().equals(&pos))
-                {
+                if let Some(mine) = minefield.get_by_pos(&pos) {
                     mine.set_state(state);
                     if state == MineState::Revealed {
                         if mine.is_bomb() {
-                            reveal_all(&mut minefield);
+                            minefield.reveal_all();
                             on_bomb_click.emit(());
-                        } else if mine.get_number_of_neighboring_bombs() == 0 {
-                            reveal_neighbors_outer(&pos, &mut minefield);
+                        } else if mine.has_no_neighbors() {
+                            minefield.reveal_neighbors(&pos);
                         }
                     }
                 }
@@ -74,7 +66,7 @@ impl Component for Minefield {
             size,
             amount_bombs,
             on_bomb_click: _,
-            game_id
+            game_id,
         } = ctx.props().clone();
 
         if self.game_id != game_id {
@@ -85,12 +77,7 @@ impl Component for Minefield {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let Props {
-            size,
-            amount_bombs: _,
-            on_bomb_click: _,
-            game_id: _
-        } = ctx.props().clone();
+        let size = ctx.props().clone().size;
 
         let mines = self
             .mines
@@ -116,43 +103,21 @@ impl Component for Minefield {
             </>
         }
     }
-
-
 }
 
-fn reveal_neighbors_inner(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> {
-    let neighbors = pos.get_neighbors();
-    let mut tmp = Vec::<Position>::new();
-    minefield
-        .iter_mut()
-        .filter(|mine| {
-            neighbors
-                .iter()
-                .position(|p| p.equals(&mine.get_position()))
-                .is_some()
-        })
-        .for_each(|mine| {
-            if mine.get_state() != MineState::Revealed && mine.get_number_of_neighboring_bombs() == 0 {
-                tmp.push(mine.get_position());
-            }
-            mine.reveal();
+impl Minefield {
+    fn _check_if_user_wins(&self, ctx: &Context<Self>, mines: &Vec<Mine>) -> bool {
+        let Props {
+            size,
+            amount_bombs,
+            on_bomb_click: _,
+            game_id: _,
+        } = ctx.props().clone();
 
-        });
-    tmp
-}
-
-fn reveal_neighbors_outer(pos: &Position, minefield: &mut Vec<Mine>){
-    let pos_vec = reveal_neighbors_inner(&pos, minefield);
-    for inner_pos in pos_vec{
-        let some_vec = reveal_neighbors_inner(&inner_pos, minefield);
-        for outer_pos in some_vec{
-            reveal_neighbors_outer(&outer_pos, minefield);
-        }
-    }
-}
-
-fn reveal_all(minefield: &mut Vec<Mine>){
-    for mine in minefield{
-        mine.reveal();
+        let amount_revealed_mines = mines
+            .into_iter()
+            .filter(|mine| mine.get_state() == MineState::Revealed)
+            .count();
+        ((size * size) - amount_bombs) == amount_revealed_mines
     }
 }

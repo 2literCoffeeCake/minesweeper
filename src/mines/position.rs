@@ -54,6 +54,7 @@ impl Position {
     pub fn equals(&self, pos: &Self) -> bool{
         self.column == pos.column && self.row == pos.row
     }
+    
 }
 
 impl Display for Position{

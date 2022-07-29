@@ -1,5 +1,5 @@
-use std::fmt::Display;
 use super::Position;
+use std::fmt::Display;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Mine {
@@ -7,40 +7,38 @@ pub struct Mine {
     row: usize,
     is_bomb: bool,
     state: MineState,
-    amount_neighbors: usize
+    amount_neighbors: usize,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum MineState{
+pub enum MineState {
     Unknown,
     Marked,
-    Revealed
+    Revealed,
 }
 
-impl Display for MineState{
+impl Display for MineState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self{
+        match self {
             MineState::Unknown => write!(f, "Unknown"),
             MineState::Marked => write!(f, "Marked Level"),
             MineState::Revealed => write!(f, "Revealed"),
         }
-        
     }
 }
 
 impl Mine {
-
-    pub fn set_state(&mut self, state: MineState){
-        if self.state != MineState::Revealed{
+    pub fn set_state(&mut self, state: MineState) {
+        if self.state != MineState::Revealed {
             self.state = state;
         }
     }
 
-    pub fn reveal(&mut self){
+    pub fn reveal(&mut self) {
         self.set_state(MineState::Revealed);
     }
 
-    pub fn get_state(self) -> MineState{
+    pub fn get_state(self) -> MineState {
         self.state
     }
 
@@ -52,41 +50,102 @@ impl Mine {
         Position::new().column(self.column).row(self.row).build()
     }
 
-    pub fn get_number_of_neighboring_bombs(&self) -> usize{
+    pub fn get_number_of_neighboring_bombs(&self) -> usize {
         self.amount_neighbors
     }
 
-    pub fn generate_mines(size: usize, amount_bombs: usize) -> Vec<Self>{
-        let mut mines: Vec<Mine> = Vec::new();
-        let mut bombs: Vec<Position> = Vec::new();
-        let mut neighbors: Vec<Position> = Vec::new();
-        loop{
-            if bombs.len() >= amount_bombs {
-                break;
-            }
-            let bomb = Position::get_random(size);
-            if !bombs.iter().any(|bomb_pos|bomb_pos.equals(&bomb)){
-                neighbors.append(&mut bomb.get_neighbors());
-                bombs.push(bomb);
-            }
-        }
+    pub fn has_no_neighbors(&self) -> bool{
+        self.amount_neighbors == 0
+    }
 
-        for row in 0..size{
-            for column in 0..size{
+    pub fn generate_mines(size: usize, amount_bombs: usize) -> Vec<Self> {
+        let mut mines: Vec<Mine> = Vec::new();
+
+        let (bombs, neighbors) = generate_bombs(size, amount_bombs);
+
+        for row in 0..size {
+            for column in 0..size {
                 let pos = Position::new().row(row).column(column).build();
-                let is_bomb = bombs.iter().any(|bomb_pos|bomb_pos.equals(&pos));
-                let amount_neighbors = neighbors.iter().filter(|mine_pos|mine_pos.equals(&pos)).count();
-                let mine = Mine { 
-                    column, 
-                    row, 
-                    is_bomb, 
+                let is_bomb = bombs.iter().any(|bomb_pos| bomb_pos.equals(&pos));
+                let amount_neighbors = neighbors
+                    .iter()
+                    .filter(|mine_pos| mine_pos.equals(&pos))
+                    .count();
+                let mine = Mine {
+                    column,
+                    row,
+                    is_bomb,
                     state: MineState::Unknown,
-                    amount_neighbors
+                    amount_neighbors,
                 };
                 mines.push(mine);
             }
         }
         mines
-
     }
+}
+
+fn generate_bombs(size: usize, amount_bombs: usize) -> (Vec<Position>, Vec<Position>) {
+    let mut bombs: Vec<Position> = Vec::new();
+    let mut neighbors: Vec<Position> = Vec::new();
+    loop {
+        if bombs.len() >= amount_bombs {
+            break;
+        }
+        let bomb = Position::get_random(size);
+        if !bombs.iter().any(|bomb_pos| bomb_pos.equals(&bomb)) {
+            neighbors.append(&mut bomb.get_neighbors());
+            bombs.push(bomb);
+        }
+    }
+    (bombs, neighbors)
+}
+
+pub trait MineVec {
+    fn get_by_pos(&mut self, pos: &Position) -> Option<&mut Mine>;
+    fn reveal_all(&mut self);
+    fn reveal_neighbors(&mut self, pos: &Position);
+}
+
+impl MineVec for Vec<Mine> {
+    fn get_by_pos(&mut self, pos: &Position) -> Option<&mut Mine> {
+        self.iter_mut()
+            .find(|mine| mine.get_position().equals(&pos))
+    }
+
+    fn reveal_all(&mut self) {
+        for mine in self {
+            mine.reveal();
+        }
+    }
+
+    fn reveal_neighbors(&mut self, pos: &Position) {
+        let pos_vec = reveal_neighbors_inner(&pos, self);
+        for inner_pos in pos_vec {
+            let some_vec = reveal_neighbors_inner(&inner_pos, self);
+            for outer_pos in some_vec {
+                self.reveal_neighbors(&outer_pos);
+            }
+        }
+    }
+}
+
+fn reveal_neighbors_inner(pos: &Position, minefield: &mut Vec<Mine>) -> Vec<Position> {
+    let neighbors = pos.get_neighbors();
+    let mut tmp = Vec::<Position>::new();
+    minefield
+        .iter_mut()
+        .filter(|mine| {
+            neighbors
+                .iter()
+                .position(|p| p.equals(&mine.get_position()))
+                .is_some()
+        })
+        .for_each(|mine| {
+            if mine.get_state() != MineState::Revealed && mine.has_no_neighbors() {
+                tmp.push(mine.get_position());
+            }
+            mine.reveal();
+        });
+    tmp
 }
