@@ -14,6 +14,7 @@ pub struct Props {
     pub amount_bombs: usize,
     pub size: usize,
     pub on_bomb_click: Callback<()>,
+    pub on_game_win: Callback<()>,
     pub game_id: Uuid,
 }
 
@@ -31,6 +32,7 @@ impl Component for Minefield {
             amount_bombs,
             on_bomb_click: _,
             game_id,
+            on_game_win: _,
         } = ctx.props().clone();
         Self {
             mines: Mine::generate_mines(size, amount_bombs),
@@ -40,6 +42,7 @@ impl Component for Minefield {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         let on_bomb_click = ctx.props().clone().on_bomb_click;
+        let on_game_win = ctx.props().clone().on_game_win;
 
         match msg {
             Msg::OnStateChange(pos, state) => {
@@ -58,6 +61,9 @@ impl Component for Minefield {
                 self.mines = minefield;
             }
         }
+        if self.check_if_user_wins(ctx){
+            on_game_win.emit(());
+        }
         true
     }
 
@@ -67,6 +73,7 @@ impl Component for Minefield {
             amount_bombs,
             on_bomb_click: _,
             game_id,
+            on_game_win: _,
         } = ctx.props().clone();
 
         if self.game_id != game_id {
@@ -106,15 +113,18 @@ impl Component for Minefield {
 }
 
 impl Minefield {
-    fn _check_if_user_wins(&self, ctx: &Context<Self>, mines: &Vec<Mine>) -> bool {
+    fn check_if_user_wins(&self, ctx: &Context<Self>) -> bool {
         let Props {
             size,
             amount_bombs,
             on_bomb_click: _,
             game_id: _,
+            on_game_win: _,
         } = ctx.props().clone();
 
-        let amount_revealed_mines = mines
+        let amount_revealed_mines = self
+            .mines
+            .clone()
             .into_iter()
             .filter(|mine| mine.get_state() == MineState::Revealed)
             .count();
