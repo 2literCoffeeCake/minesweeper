@@ -30,7 +30,8 @@ impl ToString for GameState {
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
     pub amount_bombs: usize,
-    pub size: usize,
+    pub rows: usize,
+    pub columns: usize,
 }
 
 pub enum Msg{
@@ -64,7 +65,8 @@ impl Component for Playground {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         let Props {
-            size,
+            rows,
+            columns,
             amount_bombs,
         } = ctx.props().clone();
 
@@ -78,7 +80,7 @@ impl Component for Playground {
             <div class="game">
                 <div class="playground">
                     {buttons}
-                    <Minefield {size} {amount_bombs} {on_bomb_click} game_id={self.game_id} {on_game_win}/>
+                    <Minefield {columns} {rows} {amount_bombs} {on_bomb_click} game_id={self.game_id} {on_game_win}/>
                 </div>
                 {menu}
             </div>

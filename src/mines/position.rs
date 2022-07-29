@@ -23,10 +23,10 @@ impl Position {
         self.column
     }
 
-    pub fn get_random(max_value: usize) -> Self {
+    pub fn get_random(max_row: usize, max_column: usize) -> Self {
         Self {
-            row: rand::thread_rng().gen_range(0..=(max_value-1)),
-            column: rand::thread_rng().gen_range(0..=(max_value-1)),
+            row: rand::thread_rng().gen_range(0..=(max_row-1)),
+            column: rand::thread_rng().gen_range(0..=(max_column-1)),
         }
     }
 

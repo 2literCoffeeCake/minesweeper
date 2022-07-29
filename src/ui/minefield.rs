@@ -11,11 +11,14 @@ pub struct Minefield {
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
-    pub amount_bombs: usize,
-    pub size: usize,
-    pub on_bomb_click: Callback<()>,
-    pub on_game_win: Callback<()>,
     pub game_id: Uuid,
+    
+    pub rows: usize,
+    pub columns: usize,
+    pub amount_bombs: usize,
+
+    pub on_bomb_click: Callback<()>,
+    pub on_game_win: Callback<()>,    
 }
 
 pub enum Msg {
@@ -28,14 +31,15 @@ impl Component for Minefield {
 
     fn create(ctx: &Context<Self>) -> Self {
         let Props {
-            size,
+            rows,
+            columns,
             amount_bombs,
             on_bomb_click: _,
             game_id,
             on_game_win: _,
         } = ctx.props().clone();
         Self {
-            mines: Mine::generate_mines(size, amount_bombs),
+            mines: Mine::generate_mines(rows, columns, amount_bombs),
             game_id,
         }
     }
@@ -69,7 +73,8 @@ impl Component for Minefield {
 
     fn changed(&mut self, ctx: &Context<Self>) -> bool {
         let Props {
-            size,
+            rows,
+            columns,
             amount_bombs,
             on_bomb_click: _,
             game_id,
@@ -77,14 +82,21 @@ impl Component for Minefield {
         } = ctx.props().clone();
 
         if self.game_id != game_id {
-            self.mines = Mine::generate_mines(size, amount_bombs);
+            self.mines = Mine::generate_mines(rows, columns, amount_bombs);
             self.game_id = game_id;
         }
         true
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let size = ctx.props().clone().size;
+        let Props {
+            rows,
+            columns,
+            amount_bombs: _,
+            on_bomb_click: _,
+            game_id: _,
+            on_game_win: _,
+        } = ctx.props().clone();
 
         let mines = self
             .mines
@@ -104,7 +116,7 @@ impl Component for Minefield {
 
         html! {
             <>
-                <div class="minefield" style={format!("grid-template-columns: repeat({size}, 50px); grid-template-rows: repeat({size}, 50px);")}>
+                <div class="minefield" style={format!("grid-template-columns: repeat({columns}, 50px); grid-template-rows: repeat({rows}, 50px);")}>
                     { mines }
                 </div>
             </>
@@ -115,11 +127,12 @@ impl Component for Minefield {
 impl Minefield {
     fn check_if_user_wins(&self, ctx: &Context<Self>) -> bool {
         let Props {
-            size,
+            rows,
+            columns,
             amount_bombs,
             on_bomb_click: _,
-            game_id: _,
             on_game_win: _,
+            game_id: _,
         } = ctx.props().clone();
 
         let amount_revealed_mines = self
@@ -128,6 +141,6 @@ impl Minefield {
             .into_iter()
             .filter(|mine| mine.get_state() == MineState::Revealed)
             .count();
-        ((size * size) - amount_bombs) == amount_revealed_mines
+        ((rows * columns) - amount_bombs) == amount_revealed_mines
     }
 }

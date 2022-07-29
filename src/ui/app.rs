@@ -4,7 +4,8 @@ use super::Playground;
 
 #[derive(Debug)]
 pub struct App {
-    size: usize,
+    rows: usize,
+    columns: usize,
     amount_bombs: usize,
 }
 
@@ -19,7 +20,8 @@ impl Component for App {
     fn create(_ctx: &Context<Self>) -> Self {
         Self{
             amount_bombs: 9,
-            size: 8,
+            columns: 8,
+            rows: 10
         }
     }
 
@@ -30,7 +32,7 @@ impl Component for App {
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
             <div class="app">
-                <Playground size={self.size} amount_bombs={self.amount_bombs}/>
+                <Playground rows={self.rows} columns={self.columns} amount_bombs={self.amount_bombs}/>
             </div>
         }
     }

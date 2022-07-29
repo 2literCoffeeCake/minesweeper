@@ -58,13 +58,13 @@ impl Mine {
         self.amount_neighbors == 0
     }
 
-    pub fn generate_mines(size: usize, amount_bombs: usize) -> Vec<Self> {
+    pub fn generate_mines(rows: usize, columns: usize, amount_bombs: usize) -> Vec<Self> {
         let mut mines: Vec<Mine> = Vec::new();
 
-        let (bombs, neighbors) = generate_bombs(size, amount_bombs);
+        let (bombs, neighbors) = generate_bombs(rows, columns, amount_bombs);
 
-        for row in 0..size {
-            for column in 0..size {
+        for row in 0..rows {
+            for column in 0..columns {
                 let pos = Position::new().row(row).column(column).build();
                 let is_bomb = bombs.iter().any(|bomb_pos| bomb_pos.equals(&pos));
                 let amount_neighbors = neighbors
@@ -85,14 +85,14 @@ impl Mine {
     }
 }
 
-fn generate_bombs(size: usize, amount_bombs: usize) -> (Vec<Position>, Vec<Position>) {
+fn generate_bombs(max_row: usize, max_column: usize, amount_bombs: usize) -> (Vec<Position>, Vec<Position>) {
     let mut bombs: Vec<Position> = Vec::new();
     let mut neighbors: Vec<Position> = Vec::new();
     loop {
         if bombs.len() >= amount_bombs {
             break;
         }
-        let bomb = Position::get_random(size);
+        let bomb = Position::get_random(max_row, max_column);
         if !bombs.iter().any(|bomb_pos| bomb_pos.equals(&bomb)) {
             neighbors.append(&mut bomb.get_neighbors());
             bombs.push(bomb);
