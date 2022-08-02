@@ -1,16 +1,19 @@
-
-use yew::{html, Component, Html, Context};
-use super::Playground;
+use super::{MainMenu, Playground};
+use yew::{html, Component, Context, Html};
 
 #[derive(Debug)]
 pub struct App {
-    rows: usize,
-    columns: usize,
-    amount_bombs: usize,
+    state: AppState,
 }
 
+#[derive(Debug)]
+pub enum AppState {
+    Playing(usize, usize, usize),
+    Menu,
+}
 
 pub enum Msg {
+    SetState(AppState),
 }
 
 impl Component for App {
@@ -18,21 +21,40 @@ impl Component for App {
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self{
-            amount_bombs: 9,
-            columns: 8,
-            rows: 10
+        Self {
+            state: AppState::Menu,
         }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg {
+            Msg::SetState(state) => self.state = state,
+        }
         true
     }
 
-    fn view(&self, _ctx: &Context<Self>) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let back_to_menu = ctx.link().callback(|_| Msg::SetState(AppState::Menu));
+        let start_game = ctx.link().callback(|(rows, columns, amount_bombs)| {
+            Msg::SetState(AppState::Playing(rows, columns, amount_bombs))
+        });
+
+        let inner = match self.state {
+            AppState::Playing(rows, columns, amount_bombs) => html! {
+                <>
+                    <Playground {rows} {columns} {amount_bombs} {back_to_menu}/>
+                </>
+            },
+            AppState::Menu => html! {
+                <>
+                    <MainMenu start_game={start_game}/>
+                </>
+            },
+        };
+
         html! {
             <div class="app">
-                <Playground rows={self.rows} columns={self.columns} amount_bombs={self.amount_bombs}/>
+                {inner}
             </div>
         }
     }

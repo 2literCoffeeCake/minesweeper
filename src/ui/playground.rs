@@ -1,5 +1,5 @@
 use super::{Minefield, Button, Menu, MenuAction};
-use yew::{html, Component, Context, Html, Properties, virtual_dom::VNode};
+use yew::{html, Component, Context, Html, Properties, virtual_dom::VNode, Callback};
 use uuid::Uuid;
 
 #[derive(Debug)]
@@ -32,6 +32,8 @@ pub struct Props {
     pub amount_bombs: usize,
     pub rows: usize,
     pub columns: usize,
+
+    pub back_to_menu: Callback<()>,    
 }
 
 pub enum Msg{
@@ -51,14 +53,16 @@ impl Component for Playground {
         }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        let back_to_menu = ctx.props().clone().back_to_menu;
+
         match msg{
             Msg::SetPlayingState(state) => self.state = state,
             Msg::NewGame => {
                 self.state = GameState::Playing;
                 self.game_id = Uuid::new_v4();
             },
-            Msg::BackToMainMenu => todo!(),
+            Msg::BackToMainMenu => back_to_menu.emit(()),
         }
         true
     }
@@ -68,6 +72,7 @@ impl Component for Playground {
             rows,
             columns,
             amount_bombs,
+            back_to_menu: _
         } = ctx.props().clone();
 
         let on_bomb_click = ctx.link().callback(|_| Msg::SetPlayingState(GameState::GameOver));

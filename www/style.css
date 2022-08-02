@@ -1,4 +1,4 @@
-:root{
+:root {
 
     --menu-background-color: #455a64;
 
@@ -13,9 +13,9 @@
 @font-face {
     font-family: roboto;
     src: url(Roboto-Regular.ttf);
-  }
+}
 
-*{
+* {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -25,49 +25,83 @@
     font-size: 0.7em;
 }
 
-.app{
+.app {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
 }
 
-.game{
+.main_menu {
+    display: grid;
+    grid-template-columns: 1fr auto 3fr;
+    grid-template-rows: 100px 100px auto;
+    color: var(--font-color-dark);
+}
+
+.main_menu__title {
+    grid-row: 2/3;
+    grid-column: 2/3;
+    font-size: 90px;
+}
+
+.main_menu__items {
+    grid-row: 3/4;
+    grid-column: 2/3;
+    display: flex;
+    flex-direction: column;
+    font-size: 75px;
+}
+
+.main_menu__items > div{
+    height: 80px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main_menu__items > div:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+.game {
     display: grid;
     grid-template-columns: 3fr 1fr;
     grid-template-rows: 1fr;
 }
 
-.menu{
+.menu {
     grid-column: 1/3;
     grid-row: 1/2;
 
-    background:rgba(69, 90, 100, 0.8);
+    background: rgba(69, 90, 100, 0.8);
     color: white;
     cursor: default;
 }
 
-.menu--active{
+.menu--active {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     grid-template-rows: 100px 100px 10px 50px 10px 50px 10px 50px;
 }
 
-.menu--inactive{
+.menu--inactive {
     display: none;
 }
 
-.menu_menu_item{
+.menu_menu_item {
     grid-column: 2/3;
     display: flex;
     justify-content: center;
 }
 
-.menu > .menu_menu_item:not(:first-child):hover { 
+.menu>.menu_menu_item:not(:first-child):hover {
     cursor: pointer;
     transform: scale(1.2);
 }
 
-.playground{
+.playground {
     grid-column: 1/2;
     grid-row: 1/2;
 
@@ -76,7 +110,7 @@
     grid-template-rows: 1fr var(--button-height) auto var(--button-height) 2fr;
 }
 
-.playground__button{
+.playground__button {
     border: var(--font-color-dark) 3px solid;
     border-radius: var(--button-height);
     display: flex;
@@ -84,50 +118,50 @@
     align-items: center;
 }
 
-.playground__button > svg{
+.playground__button>svg {
     height: 75%;
     fill: var(--font-color-dark);
 }
 
-.playground__button:hover{
+.playground__button:hover {
     cursor: pointer;
     background-color: var(--background-color-light);
 }
 
-.playground__button:hover>svg{
+.playground__button:hover>svg {
     fill: var(--font-color-dark)
 }
 
-.minefield{
+.minefield {
     display: grid;
     grid-column: 3/4;
     grid-row: 3/4;
 }
 
-.mine{
+.mine {
     border: 0.5px solid white;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: xxx-large;
     border-radius: 5px;
- 
+
 }
 
-.mine > div {
+.mine>div {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.mine--revealed{
+.mine--revealed {
     background-color: var(--background-color-light);
     padding: 5px;
     fill: var(--font-color-dark);
     cursor: context-menu;
 }
 
-.mine--unrevealed{
+.mine--unrevealed {
     background-color: var(--background-color-dark);
     padding: 10px;
     fill: var(--font-color-light);
