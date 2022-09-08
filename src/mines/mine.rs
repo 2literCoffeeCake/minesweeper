@@ -83,6 +83,43 @@ impl Mine {
         }
         mines
     }
+
+    pub fn generate_preview() -> Vec<Self>{
+        let mut mines: Vec<Mine> = Vec::new();
+        mines.push(Mine {
+            row: 0,
+            column: 0,
+            is_bomb: false,
+            state: MineState::Revealed,
+            amount_neighbors: 0,
+        });
+
+        mines.push(Mine {
+            row: 0,
+            column: 1,
+            is_bomb: true,
+            state: MineState::Revealed,
+            amount_neighbors: 0,
+        });
+
+        mines.push(Mine {
+            row: 1,
+            column: 0,
+            is_bomb: true,
+            state: MineState::Marked,
+            amount_neighbors: 0,
+        });
+
+        mines.push(Mine {
+            row: 1,
+            column: 1,
+            is_bomb: false,
+            state: MineState::Revealed,
+            amount_neighbors: 2,
+        });
+
+        mines
+    }
 }
 
 fn generate_bombs(max_row: usize, max_column: usize, amount_bombs: usize) -> (Vec<Position>, Vec<Position>) {

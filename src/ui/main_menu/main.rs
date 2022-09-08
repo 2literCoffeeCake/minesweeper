@@ -1,15 +1,13 @@
 use yew::{Component, Properties, Callback, html, Context, virtual_dom::VNode};
-
+use super::Settings;
 pub struct MainMenu{
     state: MenuState
 
 }
-
 pub enum MenuState{
     Main,
     NewGame,
     Settings
-
 }
 
 pub enum Msg{
@@ -58,7 +56,7 @@ impl MainMenu{
         match self.state{
             MenuState::Main => "Minesweeper",
             MenuState::NewGame => todo!(),
-            MenuState::Settings => todo!(),
+            MenuState::Settings => "Settings",
         }.to_string()
     }
 
@@ -66,7 +64,11 @@ impl MainMenu{
         let items = match self.state{
             MenuState::Main => self.get_main_menu_items(ctx),
             MenuState::NewGame => todo!(),
-            MenuState::Settings => todo!(),
+            MenuState::Settings => return html!{
+                <>
+                    <Settings />
+                </>
+            },
         };
         html!{
             <div class={"main_menu__items"}>
@@ -75,13 +77,16 @@ impl MainMenu{
         }
     }
 
-    fn get_main_menu_items(&self, _ctx: &yew::Context<Self>) -> VNode{
+    fn get_main_menu_items(&self, ctx: &yew::Context<Self>) -> VNode{
+        let start_new_game = ctx.link().callback(|_| Msg::SetState(MenuState::NewGame));
+        let go_to_settings= ctx.link().callback(|_| Msg::SetState(MenuState::Settings));
+
         html!{
             <>
-                <div>
+                <div onclick={start_new_game}>
                     {"New Game"}
                 </div>
-                <div>
+                <div onclick={go_to_settings}>
                     {"Settings"}
                 </div>
             </>

@@ -1,13 +1,33 @@
 :root {
+    --button-height: 60px;
+}
 
-    --menu-background-color: #455a64;
-
+.light-gray{
     --background-color-dark: #37474f;
     --background-color-light: #90a4ae;
     --font-color-light: #eceff1;
     --font-color-dark: #263238;
+}
 
-    --button-height: 60px;
+.blue{
+    --background-color-dark: #0d47a1;
+    --background-color-light: #42a5f5;
+    --font-color-light: #e3f2fd;
+    --font-color-dark: #0d47a1;
+}
+
+.amber{
+    --background-color-dark: #ff6f00;
+    --background-color-light: #ffca28;
+    --font-color-light: #fff8e1;
+    --font-color-dark: #ff6f00;
+}
+
+.teal{
+    --background-color-dark: #004d40;
+    --background-color-light: #26a69a;
+    --font-color-light: #e0f2f1;
+    --font-color-dark: #004d40;
 }
 
 @font-face {
@@ -34,7 +54,7 @@
 .main_menu {
     display: grid;
     grid-template-columns: 1fr auto 3fr;
-    grid-template-rows: 100px 100px auto;
+    grid-template-rows: 100px 120px auto;
     color: var(--font-color-dark);
 }
 
@@ -42,6 +62,10 @@
     grid-row: 2/3;
     grid-column: 2/3;
     font-size: 90px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .main_menu__items {
@@ -63,6 +87,46 @@
 .main_menu__items > div:hover {
     cursor: pointer;
     transform: scale(1.2);
+}
+
+.main_menu__settings{
+    grid-row: 3/4;
+    grid-column: 2/3;
+
+    display: grid;
+    grid-template-columns: repeat(2, 150px);
+    grid-template-rows: repeat(3, 150px);
+    grid-gap: 5px;
+}
+
+.main_menu__settings__color_selection{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.main_menu__settings__color_selection--inactive:hover{
+    cursor: pointer;
+    border: 2px solid var(--background-color-dark);
+    background-color: var(--font-color-light);
+}
+
+.main_menu__settings__color_selection--active{
+    border: 5px solid var(--background-color-dark)
+}
+
+.main_menu__settings__color_selection--inactive{
+    border: 2px dashed var(--background-color-dark);
+}
+
+.main_menu__settings__color_selection > div{
+    display: grid;
+    grid-template-columns: repeat(2, 50px);
+    grid-template-rows: repeat(2, 50px);
+
+    height: fit-content;
+    width: fit-content;
 }
 
 .game {
