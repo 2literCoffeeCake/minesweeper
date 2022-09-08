@@ -61,13 +61,20 @@ impl MainMenu{
     }
 
     fn get_menu_items(&self, ctx: &yew::Context<Self>)  -> VNode{
+
+
         let items = match self.state{
             MenuState::Main => self.get_main_menu_items(ctx),
             MenuState::NewGame => todo!(),
-            MenuState::Settings => return html!{
-                <>
-                    <Settings />
-                </>
+            MenuState::Settings => {
+                let back_to_main_menu = ctx.link().callback(|_| Msg::SetState(MenuState::Main));
+
+                return html!{
+                    <>
+                        <Settings {back_to_main_menu}/>
+                    </>
+                }
+
             },
         };
         html!{

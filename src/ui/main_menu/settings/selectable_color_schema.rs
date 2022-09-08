@@ -33,7 +33,6 @@ impl Component for SelectableColorSchema{
         match msg{
             Msg::OnSchemeChange => {
                 on_click.emit(color_schema)
-
             },
         }
         true

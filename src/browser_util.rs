@@ -1,5 +1,6 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::wasm_bindgen;
+use web_sys::{window, HtmlElement};
 
 #[wasm_bindgen]
 extern "C" {
@@ -39,4 +40,11 @@ pub fn console_log(str: &str) {
 #[allow(dead_code)]
 pub fn window_alert(str: &str) {
     alert(str);
+}
+
+pub fn get_body() -> Option<HtmlElement>{
+    let window = window().expect("no global `window` exists");
+    let document = window.document().expect("should have a document on window");
+
+    document.body()
 }

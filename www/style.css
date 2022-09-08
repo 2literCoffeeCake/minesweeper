@@ -99,6 +99,20 @@
     grid-gap: 5px;
 }
 
+
+.main_menu__settings__menu_item{
+    height: 80px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main_menu__settings__menu_item:hover{
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
 .main_menu__settings__color_selection{
     display: flex;
     justify-content: center;
