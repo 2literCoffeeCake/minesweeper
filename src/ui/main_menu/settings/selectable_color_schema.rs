@@ -1,7 +1,7 @@
 use yew::{Callback, Properties, Component, Context, Html, html};
 
 use crate::mines::Mine;
-use crate::ui::Field;
+use crate::ui::playground::Field;
 
 use super::ColorSchema;
 
