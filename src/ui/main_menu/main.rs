@@ -1,5 +1,5 @@
 use yew::{Component, Properties, Callback, html, Context, virtual_dom::VNode};
-use super::Settings;
+use super::{SettingsMenu, NewGameMenu};
 pub struct MainMenu{
     state: MenuState
 
@@ -11,7 +11,8 @@ pub enum MenuState{
 }
 
 pub enum Msg{
-    SetState(MenuState)
+    SetState(MenuState),
+    StartNewGame(usize, usize, usize)
 }
 
 #[derive(Clone, PartialEq, Properties)]
@@ -30,9 +31,12 @@ impl Component for MainMenu{
         }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        let start_game = ctx.props().clone().start_game;
+
         match msg{
             Msg::SetState(state) => self.state = state,
+            Msg::StartNewGame(r, c, a) => start_game.emit((r, c, a)),
         }
         true
     }
@@ -55,7 +59,7 @@ impl MainMenu{
     fn get_title(&self) -> String{
         match self.state{
             MenuState::Main => "Minesweeper",
-            MenuState::NewGame => todo!(),
+            MenuState::NewGame => "New game",
             MenuState::Settings => "Settings",
         }.to_string()
     }
@@ -65,13 +69,20 @@ impl MainMenu{
 
         let items = match self.state{
             MenuState::Main => self.get_main_menu_items(ctx),
-            MenuState::NewGame => todo!(),
-            MenuState::Settings => {
+            MenuState::NewGame => {
                 let back_to_main_menu = ctx.link().callback(|_| Msg::SetState(MenuState::Main));
-
+                let start_game = ctx.link().callback(|(r, c, a)| Msg::StartNewGame(r, c, a));
                 return html!{
                     <>
-                        <Settings {back_to_main_menu}/>
+                        <NewGameMenu {back_to_main_menu} {start_game}/>
+                    </>
+                }
+            },
+            MenuState::Settings => {
+                let back_to_main_menu = ctx.link().callback(|_| Msg::SetState(MenuState::Main));
+                return html!{
+                    <>
+                        <SettingsMenu {back_to_main_menu}/>
                     </>
                 }
 

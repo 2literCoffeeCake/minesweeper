@@ -1,6 +1,7 @@
 mod main;
 mod settings;
-
+mod new_game;
 
 pub use main::MainMenu;
-pub use settings::SettingsMenu as Settings;
+use settings::SettingsMenu;
+use new_game::NewGameMenu;

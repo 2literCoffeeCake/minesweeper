@@ -94,8 +94,8 @@
     grid-column: 2/3;
 
     display: grid;
-    grid-template-columns: repeat(2, 150px);
-    grid-template-rows: repeat(3, 150px);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     grid-gap: 5px;
 }
 
@@ -141,6 +141,28 @@
 
     height: fit-content;
     width: fit-content;
+}
+
+
+.main_menu__new_game{
+    display: grid;
+    grid-template-rows: repeat(4, 60px);
+
+    grid-row: 3/4;
+    grid-column: 2/3;
+}
+
+.main_menu__new_game > div{
+    height: 80px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main_menu__new_game > div:hover{
+    cursor: pointer;
+    transform: scale(1.4);
 }
 
 .game {
