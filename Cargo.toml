@@ -8,11 +8,11 @@ edition = "2021"
 [dependencies]
 rand = "0.8.5"
 getrandom = { version = "0.2.7", features = ["js"] }
-wasm-bindgen = "0.2.81"
+wasm-bindgen = "0.2.83"
 yew = "0.19.3"
-web-sys = "0.3.58"
+web-sys = "0.3.60"
 yew-stdweb = "0.18.0"
-js-sys = "0.3.58"
+js-sys = "0.3.60"
 
 [dependencies.uuid]
 version = "1.1.2"

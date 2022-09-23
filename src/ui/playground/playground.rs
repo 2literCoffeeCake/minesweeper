@@ -120,7 +120,7 @@ impl Playground{
     }
 
     fn render_buttons(&self, ctx: &Context<Self>) -> VNode{
-        let on_back_button_click = ctx.link().callback(|_| Msg::SetPlayingState(GameState::Pausing));
+        let on_back_button_click = ctx.link().callback(|_| Msg::BackToMainMenu);
         let on_menu_button_click = ctx.link().callback(|_| Msg::SetPlayingState(GameState::Pausing));
 
         html!{
