@@ -9,7 +9,7 @@ edition = "2021"
 rand = "0.8.5"
 getrandom = { version = "0.2.7", features = ["js"] }
 wasm-bindgen = "0.2.83"
-yew = "0.19.3"
+yew = "0.20.0"
 web-sys = "0.3.60"
 yew-stdweb = "0.18.0"
 js-sys = "0.3.60"
